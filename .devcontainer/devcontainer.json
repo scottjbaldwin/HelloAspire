@@ -6,11 +6,23 @@
 	"image": "mcr.microsoft.com/devcontainers/dotnet:dev-10.0-noble",
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
-		"ghcr.io/devcontainers/features/powershell:1": {},
+		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
+			"version": "stable"
+		},
+		"ghcr.io/devcontainers/features/powershell:1": {
+			"modules" : "posh-git",
+			"powershellProfileURL": "https://raw.githubusercontent.com/scottjbaldwin/UsefulStuff/refs/heads/main/PowershellProfile.ps1"
+		},
 		"ghcr.io/devcontainers/features/node:1": {},
 		"ghcr.io/devcontainers/features/python:1": {},
-		"ghcr.io/devcontainers-extra/features/uv:1": {}
-	},
+		"ghcr.io/devcontainers-extra/features/uv:1": {},
+		"ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+	},	
+	"mounts": [
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/git/UsefulStuff/neovim,target=/home/vscode/.config/nvim,type=bind,consistency=cached"
+	],
+
 
 	"hostRequirements": {
 		"cpus": 8,
@@ -30,13 +42,22 @@
 	// "postCreateCommand": "dotnet restore",
 	"onCreateCommand": "curl -sSL https://aspire.dev/install.sh | bash",
 	"postStartCommand": "dotnet dev-certs https --trust",
+	// Set pwsh as the default login shell for the vscode user
+	"postCreateCommand": "sudo chsh -s /usr/bin/pwsh vscode",
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-dotnettools.csdevkit",
-				"GitHub.copilot-chat",
-				"GitHub.copilot"
-			]
+				"ms-dotnettools.csdevkit"
+			],
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "pwsh",
+				"terminal.integrated.profiles.linux": {
+					"pwsh": {
+						"path": "/usr/bin/pwsh",
+						"icon": "terminal-powershell"
+					}
+				}
+			}
 		}
 	}
 	// Configure tool-specific properties.
